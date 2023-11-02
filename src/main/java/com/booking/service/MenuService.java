@@ -59,7 +59,7 @@ public class MenuService {
                     // panggil fitur mengubah workstage menjadi finish/cancel
                     break;
                 case 0:
-                    backToMainMenu = false;
+                    backToMainMenu = true;
                     break;
             }
         } while (!backToMainMenu);
