@@ -17,52 +17,71 @@ public class MenuService {
     private static Scanner input = new Scanner(System.in);
 
     public static void mainMenu() {
-        String[] mainMenuArr = {"Show Data", "Create Reservation", "Complete/cancel reservation", "Exit"};
-        String[] subMenuArr = {"Recent Reservation", "Show Customer", "Show Available Employee", "Back to main menu"};
-    
-        int optionMainMenu;
-        int optionSubMenu;
+        String[] mainMenuArr = { "Show Data", "Create Reservation", "Complete/cancel reservation", "Exit" };
+        String[] subMenuArr = { "Recent Reservation", "Show Customer", "Show Available Employee",
+                "Show Reservation History", "Back to main menu" };
+        PrintService print = new PrintService();
 
-		boolean backToMainMenu = false;
-        boolean backToSubMenu = false;
+        String optionMainMenu;
+        String optionSubMenu;
+
+        boolean isNumber = true;
+        boolean backToMainMenu = false;
         do {
             PrintService.printMenu("Main Menu", mainMenuArr);
-            optionMainMenu = Integer.valueOf(input.nextLine());
-            switch (optionMainMenu) {
-                case 1:
-                    do {
-                        PrintService.printMenu("Show Data", subMenuArr);
-                        optionSubMenu = Integer.valueOf(input.nextLine());
-                        // Sub menu - menu 1
-                        switch (optionSubMenu) {
-                            case 1:
-                                // panggil fitur tampilkan recent reservation
-                                break;
-                            case 2:
-                                // panggil fitur tampilkan semua customer
-                                break;
-                            case 3:
-                                // panggil fitur tampilkan semua employee
-                                break;
-                            case 4:
-                                // panggil fitur tampilkan history reservation + total keuntungan
-                                break;
-                            case 0:
-                                backToSubMenu = false;
-                        }
-                    } while (!backToSubMenu);
-                    break;
-                case 2:
-                    // panggil fitur menambahkan reservation
-                    break;
-                case 3:
-                    // panggil fitur mengubah workstage menjadi finish/cancel
-                    break;
-                case 0:
-                    backToMainMenu = true;
-                    break;
+            optionMainMenu = input.nextLine();
+            isNumber = ValidationService.isNumber(optionMainMenu);
+            if (isNumber) {
+                int optionMainMenuNumber = Integer.valueOf(optionMainMenu);
+                switch (optionMainMenuNumber) {
+                    case 1:
+                        do {
+                            backToMainMenu = false;
+                            PrintService.printMenu("Show Data", subMenuArr);
+                            optionSubMenu = input.nextLine();
+                            isNumber = ValidationService.isNumber(optionSubMenu);
+                            if (isNumber) {
+                                int optionSubMenuNumber = Integer.parseInt(optionSubMenu);
+                                switch (optionSubMenuNumber) {
+                                    case 1:
+                                        print.showRecentReservation(reservationList);
+                                        break;
+                                    case 2:
+                                        print.showAllCustomer(personList);
+                                        break;
+                                    case 3:
+                                        print.showAllEmployee(personList);
+                                        break;
+                                    case 4:
+                                        print.showHistoryReservation(reservationList);
+                                        break;
+                                    case 0:
+                                        backToMainMenu = true;
+                                        break;
+                                    default:
+                                        PrintService.printSlashLine();
+                                        System.out.println("Input tidak sesuai");
+                                        PrintService.printSlashLine();
+                                }
+                            }
+                        } while (!backToMainMenu);
+                        break;
+                    case 2:
+                        ReservationService.createReservation(print, reservationList, personList, serviceList);
+                        break;
+                    case 3:
+                        ReservationService.editReservationWorkstage(print, reservationList);
+                        break;
+                    case 0:
+                        System.exit(0);
+                        break;
+                    default:
+                        PrintService.printSlashLine();
+                        System.out.println("Input tidak sesuai");
+                        PrintService.printSlashLine();
+                }
             }
-        } while (!backToMainMenu);
-		
-	}
+        } while (true);
+
+    }
 }
